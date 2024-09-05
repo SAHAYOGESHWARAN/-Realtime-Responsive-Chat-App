@@ -76,7 +76,6 @@ app.get('/api/current_user', (req, res) => {
 
 app.use('/uploads', express.static('uploads'));
 
-// Socket.io configuration
 io.on('connection', (socket) => {
   console.log('User connected');
 
