@@ -90,7 +90,6 @@ io.on('connection', (socket) => {
     io.to(roomId).emit('message', { userId, content });
   });
 
-  // Handle typing indicator
   socket.on('typing', ({ roomId, userId }) => {
     socket.to(roomId).emit('displayTyping', { userId });
   });
