@@ -86,9 +86,6 @@ const Chat = ({ roomId, userId }) => {
 import React, { useEffect, useState } from 'react';
 import './Chat.css'; // Importing the CSS for Chat component
 
-const Chat = ({ roomId, userId }) => {
-  // Chat component logic here...
-};
 
 
 export default Chat;
