@@ -39,7 +39,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Auth Routes
+
 const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes);
 
