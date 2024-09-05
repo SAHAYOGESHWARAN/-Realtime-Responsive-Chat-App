@@ -85,7 +85,7 @@ io.on('connection', (socket) => {
     socket.join(roomId);
   });
 
-  // Handle incoming messages
+
   socket.on('message', ({ roomId, userId, content }) => {
     io.to(roomId).emit('message', { userId, content });
   });
