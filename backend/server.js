@@ -10,7 +10,6 @@ const http = require('http');
 // Load environment variables
 dotenv.config();
 
-// Initialize express app
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
