@@ -60,7 +60,7 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
   passport.authenticate('google'),
   (req, res) => {
-    // Successful authentication, redirect home.
+   
     res.redirect('/chat');
   }
 );
