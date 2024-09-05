@@ -99,7 +99,7 @@ io.on('connection', (socket) => {
     socket.to(roomId).emit('hideTyping');
   });
 
-  // Handle user disconnecting
+
   socket.on('disconnect', () => {
     console.log('User disconnected');
   });
