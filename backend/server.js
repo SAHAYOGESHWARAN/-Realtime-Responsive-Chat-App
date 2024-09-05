@@ -47,7 +47,6 @@ app.use('/api/auth', authRoutes);
 const chatRoutes = require('./routes/chatRoutes');
 app.use('/api/chat', chatRoutes);
 
-// Google OAuth configuration
 const { googleAuth } = require('./middlewares/authMiddleware');
 googleAuth(passport);
 
