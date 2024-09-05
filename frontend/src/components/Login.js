@@ -1,34 +1,27 @@
-import React, { useState, useContext } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
+// frontend/src/components/Login.js
+import React from 'react';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
-  const { login } = useContext(AuthContext);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const handleSuccess = (response) => {
+    // Handle success response
+    window.location.href = '/auth/google'; // Redirect to backend for Google OAuth
+  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    login(email, password);
+  const handleFailure = (response) => {
+    console.error('Google login failed', response);
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
+    <div className="login-container">
+      <h2>Login</h2>
+      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+        <GoogleLogin
+          onSuccess={handleSuccess}
+          onFailure={handleFailure}
+          buttonText="Login with Google"
         />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-        />
-        <button type="submit">Login</button>
-        <a href="http://localhost:5000/api/auth/google">Login with Google</a>
-      </form>
+      </GoogleOAuthProvider>
     </div>
   );
 };
