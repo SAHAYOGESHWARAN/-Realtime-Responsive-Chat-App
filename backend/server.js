@@ -10,9 +10,10 @@ dotenv.config();
 const authRoutes = require('./routes/authRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const { googleAuth } = require('./middlewares/authMiddleware');
+app.use('/uploads', express.static('uploads'));
 
-// const cors = require('cors');
-// app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+ const cors = require('cors');
+ app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
