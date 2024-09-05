@@ -56,6 +56,18 @@ io.on('connection', (socket) => {
 });
 
 io.on('connection', (socket) => {
+    // Handle user joining the room
+    socket.on('joinRoom', ({ roomId }) => {
+      socket.join(roomId);
+    });
+  
+    // Handle incoming messages
+    socket.on('message', ({ roomId, userId, content }) => {
+      // Emit the message to everyone in the room, including the sender
+      io.to(roomId).emit('message', { userId, content });
+    });
+  
+    // Handle typing indicator
     socket.on('typing', ({ roomId, userId }) => {
       socket.to(roomId).emit('displayTyping', { userId });
     });
@@ -64,14 +76,12 @@ io.on('connection', (socket) => {
       socket.to(roomId).emit('hideTyping');
     });
   
-    socket.on('message', ({ roomId, userId, content }) => {
-      io.to(roomId).emit('message', { userId, content });
-    });
-  
-    socket.on('joinRoom', ({ roomId }) => {
-      socket.join(roomId);
+    // Handle user leaving the room
+    socket.on('disconnect', () => {
+      console.log('User disconnected');
     });
   });
+  
   
 
 const PORT = process.env.PORT || 5000;
