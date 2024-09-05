@@ -55,5 +55,24 @@ io.on('connection', (socket) => {
   });
 });
 
+io.on('connection', (socket) => {
+    socket.on('typing', ({ roomId, userId }) => {
+      socket.to(roomId).emit('displayTyping', { userId });
+    });
+  
+    socket.on('stopTyping', ({ roomId }) => {
+      socket.to(roomId).emit('hideTyping');
+    });
+  
+    socket.on('message', ({ roomId, userId, content }) => {
+      io.to(roomId).emit('message', { userId, content });
+    });
+  
+    socket.on('joinRoom', ({ roomId }) => {
+      socket.join(roomId);
+    });
+  });
+  
+
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -5,65 +5,79 @@ const Chat = ({ roomId, userId }) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [typingUser, setTypingUser] = useState(null);
-  const socket = io('http://localhost:5000'); // Connect to your backend server
+  const socket = io('http://localhost:5000'); // Adjust the URL based on your server
 
+  // Handle typing indicator and stop typing
   useEffect(() => {
-    // Emit typing and stopTyping events
     const handleTyping = () => socket.emit('typing', { roomId, userId });
     const handleStopTyping = () => socket.emit('stopTyping', { roomId });
 
-    // Listen for typing and stopTyping events from other users
     socket.on('displayTyping', ({ userId }) => {
-      setTypingUser(userId);  // Set the user who is typing
+      setTypingUser(userId);  // Display typing user
     });
 
     socket.on('hideTyping', () => {
-      setTypingUser(null);  // Clear typing indicator when the user stops typing
+      setTypingUser(null);  // Hide typing indicator
     });
 
+    // Handle incoming messages
+    socket.on('message', (messageData) => {
+      setMessages((prevMessages) => [...prevMessages, messageData]);  // Update messages list
+    });
+
+    // Clean up socket listeners when the component unmounts
     return () => {
-      // Clean up event listeners when component unmounts
       socket.off('displayTyping');
       socket.off('hideTyping');
+      socket.off('message');
     };
   }, [roomId, userId, socket]);
 
+  // Handle message input change and send message
   const handleInputChange = (e) => {
     setMessage(e.target.value);
     if (e.target.value) {
-      handleTyping();  // Start typing
+      socket.emit('typing', { roomId, userId });
     } else {
-      handleStopTyping();  // Stop typing when input is cleared
+      socket.emit('stopTyping', { roomId });
     }
   };
 
   const handleSendMessage = (e) => {
     e.preventDefault();
-    socket.emit('message', { roomId, userId, content: message });  // Emit the message
-    setMessage('');
-    handleStopTyping();  // Stop typing when the message is sent
+    if (message.trim()) {
+      socket.emit('message', { roomId, userId, content: message });  // Send message to server
+      setMessage('');  // Clear the message input
+      socket.emit('stopTyping', { roomId });  // Stop typing
+    }
   };
 
   return (
     <div>
-      <div>
-        {messages.map((msg, index) => (
-          <div key={index}>{msg.content}</div>
-        ))}
+      <div className="chat-window">
+        {/* Messages */}
+        <div className="messages">
+          {messages.map((msg, index) => (
+            <div key={index} className="message">
+              <strong>{msg.userId}:</strong> {msg.content}
+            </div>
+          ))}
+        </div>
+
+        {/* Typing Indicator */}
+        {typingUser && <p className="typing-indicator">{typingUser} is typing...</p>}
       </div>
 
-      {/* Typing Indicator */}
-      {typingUser && <p>{typingUser} is typing...</p>}
-
       {/* Message Input */}
-      <form onSubmit={handleSendMessage}>
+      <form onSubmit={handleSendMessage} className="message-form">
         <input
           type="text"
           value={message}
           onChange={handleInputChange}
           placeholder="Type a message"
+          className="message-input"
         />
-        <button type="submit">Send</button>
+        <button type="submit" className="send-button">Send</button>
       </form>
     </div>
   );
