@@ -80,7 +80,6 @@ app.use('/uploads', express.static('uploads'));
 io.on('connection', (socket) => {
   console.log('User connected');
 
-  // Handle user joining the room
   socket.on('joinRoom', ({ roomId }) => {
     socket.join(roomId);
   });
